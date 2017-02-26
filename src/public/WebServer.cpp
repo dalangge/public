@@ -1,3 +1,10 @@
+/*
+ Copyright (c) 2017 Brother Wolf
+ 
+ A common c/c++ tool code.
+ 
+ */
+
 #include "stdafx.h"
 #include "WebServer.h"
 
@@ -40,7 +47,7 @@ bool HttpRequest::Unpack(const std::string & header)
 	pos = sss.find("\r\n");
 	ParseFirstLine(sss.substr(0, pos));
 
-	// 逐行解析
+	// line by line
 	while (1)
 	{
 		size_t start = pos + 2;
@@ -50,8 +57,8 @@ bool HttpRequest::Unpack(const std::string & header)
 			break;
 		}
 
-		// 解析单行
-		std::string line = sss.substr(start, pos-start);
+		// parse one line
+        std::string line = sss.substr(start, pos-start);
 		size_t pos1 = line.find(":");
 		if (pos1 != std::string::npos)
 		{
@@ -195,7 +202,7 @@ bool HttpResponse::Unpack(const std::string & header)
 	pos = sss.find("\r\n");
 	ParseFirstLine(sss.substr(0, pos));
 
-	// 逐行解析
+	// line by line
 	while (1)
 	{
 		size_t start = pos + 2;
@@ -205,7 +212,7 @@ bool HttpResponse::Unpack(const std::string & header)
 			break;
 		}
 
-		// 解析单行
+		// parse one line
 		std::string line = sss.substr(start, pos-start);
 		size_t pos1 = line.find(":");
 		if (pos1 != std::string::npos)
@@ -378,7 +385,7 @@ bool ServletHandler::IOHandler()
 			}
 		}
 
-		// 一次HTTP请求接收完成
+		// a http request receive completed
 		if (bHeaderCompleted && (int)strCache.size() >= nContentLength)
 		{
 			request.m_strBody = strCache.substr(0, nContentLength);
@@ -386,7 +393,7 @@ bool ServletHandler::IOHandler()
 			HttpResponse response;
 			int n = m_pServlet->OnService(request, response, *this);
 
-			// 发送应答
+			// send response to client
 			if (n & ServletReturnType_SendResponse)
 			{
 				if (!SendResponse(response))
@@ -395,7 +402,8 @@ bool ServletHandler::IOHandler()
 				}
 			}
 
-			// 保持连接
+			// don't close connect, start parse another http request.
+            // "Connect: Keep-Alive"
 			if (n & ServletReturnType_KeepAlive)
 			{
 				strCache.erase(0, nContentLength);
@@ -506,14 +514,12 @@ bool WebServer::JoinThread(Servlet * p, SOCKET s)
 		}
 	}
 
-	// 线程池已经达到最大限度
-	if (m_vecHandler.size() >= m_nMaxThread)
+    if (m_vecHandler.size() >= m_nMaxThread)
 	{
 		return false;
 	}
 
-	// 创建一个新的线程
-	ServletHandler * pHandler = new ServletHandler;
+    ServletHandler * pHandler = new ServletHandler;
 	pHandler->Start(p, s);
 	m_vecHandler.push_back(pHandler);
 	return true;
@@ -577,7 +583,7 @@ const HttpResponse & HttpClientSocket::Response()
 	return m_response;
 }
 
-// 返回值true，body内容将不被m_response保存
+
 bool HttpClientSocket::OnBody(const char * buf, size_t len)
 {
 	return false;
@@ -655,7 +661,7 @@ bool HttpClientSocket::RecvResponse()
 			continue;
 		}
 
-		// 头部收齐
+		// http response header finished
 		m_response.Unpack(strCache);
 		strCache.erase(0, pos+4);
 
@@ -668,7 +674,7 @@ bool HttpClientSocket::RecvResponse()
 			m_response.m_strBody.append(strCache.begin(), strCache.begin()+(int)n);
 		}
 
-		// 收齐 Content-Length
+		// 蕆eceive body data
 		while (nRecv < nContentLength)
 		{
 			ret = Recv(buf, 4096);

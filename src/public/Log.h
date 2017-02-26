@@ -1,15 +1,10 @@
-/*******************************************************************************
-* 版权所有：	北京市博汇科技有限公司(C) 2013
-* 文件名称：	Log.h 
-*
-* 内容摘要： 	日志类，写文件和STD输出
-*
---------------------------------------------------------------------------------
-* 版本		修改时间		修改人		修改内容
-* V1.0		2013/08/30		龚清华		创建
-* V1.1		2014/09/30		龚清华		增加CLogSrv等级输出、CLog对象
-* V1.2		2015/07/27		龚清华		修正Log格式化缓冲区保护，采用vsnprintf
-*******************************************************************************/
+/*
+ Copyright (c) 2017 Brother Wolf
+ 
+ A common c/c++ tool code.
+ 
+ */
+
 #ifndef _BroadvTool_Log_H_
 #define _BroadvTool_Log_H_
 
@@ -30,21 +25,16 @@ class CLogSrv : public Thread
 public:
 	CLogSrv();
 	virtual ~CLogSrv();
-
-	// dir 尾部不带'\\'或'/'
+    
 	void SetDir(const std::string & dir);
-	
-	// 输出 <= level 的日志
+    
 	void SetLevel(unsigned int level = 3);
 	unsigned int GetLevel() const;
 
-	// 开关 （p—printf/f-file）
-	void Enable(bool p, bool f);
+    // p - printf , f - file
+    void Enable(bool p, bool f);
 
-	// 写日志
 	void WriteLog(unsigned int level, const char * buf);
-
-	// 格式化写日志，（注意：内存限制 4096）
 	void FormatLog(unsigned int level, const char * fmt, ...);
 
 private:
@@ -62,12 +52,8 @@ private:
 	unsigned int m_nLevel;
 };
 
-
-// 默认日志服务器
 extern CLogSrv g_DefaultLogSrv;
 
-
-// 日志对象
 class CLogObj
 {
 public:

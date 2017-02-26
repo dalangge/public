@@ -7,7 +7,6 @@
 namespace BroadvTool
 {
 
-// 日志模块提供一个全局的默认写入对象
 CLogSrv g_DefaultLogSrv;
 
 
@@ -45,7 +44,6 @@ void CLogSrv::Enable(bool p, bool f)
 	m_bPrint = p;
 	m_bFile = f;
 
-	// 先停止一下“可能存在”的写入线程
 	m_bStop = true;
 	Thread::Join(this);
 	if (m_bFile)
@@ -93,10 +91,10 @@ void CLogSrv::WriteLog(unsigned int level, const char * buf)
 	if (m_bFile)
 	{
 		AutoLock mx(m_cs);
-		if (m_vecMsg.size() > 10000)
+		if (m_vecMsg.size() > 50000)
 		{
 			m_vecMsg.clear();
-			WriteLog(1,"CLogSrv cache full，clear it！ size=10000");
+			WriteLog(1,"CLogSrv cache full，clear it！ size=50000");
 		}
 		m_vecMsg.push_back(str);
 	}	
@@ -134,7 +132,6 @@ void CLogSrv::Routine()
 		CUtility::GetLocalTime(&t);
 		if (nHour != t.tm_hour)
 		{
-			// 一个小时换一个FILE文件
 			char buf[256]={0};
 			sprintf(buf, "%s%c%04d%c%02d%c%02d%c%04d%02d%02d_%02d.log", 
 				m_strDir.empty() ? CFileEx::GetExeDirectory().c_str() : m_strDir.c_str(), 
@@ -175,7 +172,6 @@ void CLogSrv::Routine()
 		}
 	}
 
-	// 线程退出，关闭文件
 	if (fp != NULL)
 	{
 		fclose(fp);

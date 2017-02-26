@@ -1,20 +1,10 @@
-/*******************************************************************************
-* 版权所有：	北京市博汇科技有限公司(C) 2013
-* 文件名称：	WebServer.h 
-*
-* 内容摘要： 	——类简介——
-*				HttpRequest			—— HTTP请求封包
-*				HttpResponse		—— HTTP返回封包
-*				Servlet				—— 接口类
-*				ServletHandler		—— 套接字、线程池
-*				WebServer			—— Web服务器
-*				HttpClientSocket	—— HTTP客户端套接字
-*
---------------------------------------------------------------------------------
-* 版本		修改时间		修改人		修改内容
-* V1.0		2014/8/14		龚清华		创建
-* V1.1		2015/05/15		龚清华		HttpClientSocket "Content-Length"增加长度	
-*******************************************************************************/
+/*
+ Copyright (c) 2017 Brother Wolf
+ 
+ A common c/c++ tool code.
+ 
+ */
+
 #ifndef _BroadvTool_WebServer_H_
 #define _BroadvTool_WebServer_H_
 
@@ -91,7 +81,7 @@ class Servlet
 public:
 	virtual ~Servlet(void){}
 
-	// 返回值参见：enum ServletReturnType
+	// refer to enum ServletReturnType
 	virtual int OnService(const HttpRequest & request, HttpResponse & response, ServletHandler & handler) = 0;
 };
 
@@ -154,7 +144,7 @@ public:
 	HttpRequest & Request();
 	const HttpResponse & Response();
 
-	// 返回值true，body内容将不被m_response保存
+	//  return true, the body data will not append to m_response
 	virtual bool OnBody(const char * buf, size_t len);
 
 	bool IOHandler();
@@ -167,7 +157,7 @@ protected:
 private:
 	HttpRequest m_request;
 	HttpResponse m_response;
-	SockAddr m_addrSrv;			// Web服务器地址
+	SockAddr m_addrSrv;	
 };
 
 

@@ -1,27 +1,20 @@
-/*******************************************************************************
-* 版权所有：	北京市博汇科技有限公司(C) 2013
-* 文件名称：	Socket.h
-*
-* 内容摘要： 	跨平台 SOCKET 
-*
---------------------------------------------------------------------------------
-* 版本		修改时间		修改人		修改内容
-* V1.0		2013/07/06		龚清华		创建
-* V1.1		2014/06/20		龚清华		WSAStartup、WSACleanup移动到全局变量中。
-*******************************************************************************/
+/*
+ Copyright (c) 2017 Brother Wolf
+ 
+ A common c/c++ tool code.
+ 
+ */
+
 #ifndef _BroadvTool_Socket_H_
 #define _BroadvTool_Socket_H_
 
 #include <string>
 
-// windows相关头文件
 #ifdef _WIN32
 #include <WinSock2.h>
 #include <ws2tcpip.h>
 #pragma comment(lib,"ws2_32")
 #pragma warning(disable : 4996)
-
-// linux相关头文件、宏
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -67,8 +60,7 @@ class Socket
 public:
 	Socket(void);
 	Socket(SOCKET s);
-
-	// 析构函数将会关闭 SOCKET，若不想关闭，调用Detach
+    
 	virtual ~Socket(void);
 
 	SOCKET Create(int domain = AF_INET, int type = SOCK_DGRAM, int protocol = IPPROTO_IP);
@@ -78,7 +70,7 @@ public:
 	void Attach(SOCKET s);
 	void Detach();
 
-	// 关闭方式：0-reading 1-writing 2-both
+	// how : 0-reading 1-writing 2-both
 	void Shutdown(int how);
 	void Close();
 	
@@ -99,11 +91,9 @@ public:
 	int GetPeerName(SockAddr & peer);
 	int GetSockName(SockAddr & addr);
 
-	// 组播相关操作
 	int AddMembership(const std::string & multip, const std::string & localip);
 	int DropMembership(const std::string & multip, const std::string & localip);
 
-	// SOCKET属性快速设置函数
 	int ReuseAddr(bool reuse = true);
 	int SetRecvBufSize(int sz);
 	int SetSendBufSize(int sz);

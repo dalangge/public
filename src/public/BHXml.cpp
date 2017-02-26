@@ -117,24 +117,19 @@ char *CBHXml::GetDoc()
 bool CBHXml::AddElem(const char *pStr)
 {
 	int nLen = (int)strlen(pStr);
-
-	//Elem的长度不得大于MAX_ELEM_SIZE
 	if(nLen > MAX_ELEM_SIZE - 1)
 	{
 		return false;
 	}
-
-	//确定内存是否够用
+    
 	while(nLen + m_nPos + 10 > m_nBufSize)
 	{
 		SetBuffer(m_nBufSize * 2);
 	}
 
-	//记录当前的Elem
 	memcpy(m_pElem[m_nLayer], pStr, nLen);
 	m_pElem[m_nLayer][nLen] = '\0';
 
-	//上一次也为AddElem，则需要将上一次的结束
 	if(STATUS_ELEM_ADD == m_nStatus)
 	{
 		m_pBuf[m_nPos] = ' ';
@@ -144,13 +139,12 @@ bool CBHXml::AddElem(const char *pStr)
 		m_nPos += 4;
 	}
 
-	//添加新的Elem
 	m_pBuf[m_nPos] = '<';
 	m_nPos++;
 	memcpy(m_pBuf + m_nPos, pStr, nLen);
 	m_nPos += nLen;
 
-	m_nStatus = STATUS_ELEM_ADD;		//记录当前状态
+	m_nStatus = STATUS_ELEM_ADD;
 
 	return true;
 }
@@ -163,8 +157,7 @@ bool CBHXml::IntoElem()
 	{
 		SetBuffer(m_nBufSize * 2);
 	}
-
-	//上一次也为AddElem，则需要将上一次的结束
+    
 	if(STATUS_ELEM_ADD == m_nStatus)
 	{
 		m_pBuf[m_nPos] = '>';
@@ -172,7 +165,6 @@ bool CBHXml::IntoElem()
 		m_nPos += 2;
 	}
 
-	//层数++
 	m_nLayer++;
 	if(m_nLayer >= 16)
 	{
@@ -180,8 +172,8 @@ bool CBHXml::IntoElem()
 	}
 	m_pElem[m_nLayer][0] = '\0';
 
-	m_nStatus = STATUS_ELEM_FINISH;		//记录当前状态
-	return true;
+	m_nStatus = STATUS_ELEM_FINISH;
+    return true;
 }
 
 bool CBHXml::OutOfElem()

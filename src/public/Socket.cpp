@@ -51,7 +51,6 @@ std::string SockAddr::GetIP() const
 Socket::Socket(void)
 : m_hSocket(INVALID_SOCKET)
 {
-	// windowsœ¬º”‘ÿWinSockø‚
 #ifdef _WIN32
 	class InitWinSockLib
 	{
@@ -73,7 +72,9 @@ Socket::~Socket(void)
 	Close();
 }
 
-SOCKET Socket::Create(int domain /* = AF_INET */, int type /* = SOCK_DGRAM */, int protocol /* = IPPROTO_IP */)
+SOCKET Socket::Create(int domain /* = AF_INET */,
+                      int type /* = SOCK_DGRAM */,
+                      int protocol /* = IPPROTO_IP */)
 {
 	SOCKET s = socket(domain, type, protocol);
 	if (s == INVALID_SOCKET)

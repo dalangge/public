@@ -1,18 +1,15 @@
-/*******************************************************************************
-* 版权所有：	北京市博汇科技有限公司(C) 2013
-* 文件名称：	Thread.h
-*
-* 内容摘要： 	线程对象基类
-*
---------------------------------------------------------------------------------
-* 版本		修改时间		修改人		修改内容
-* V1.0		2013/07/05		龚清华		创建
-*******************************************************************************/
+/*
+ Copyright (c) 2017 Brother Wolf
+ 
+ A common c/c++ tool code.
+ 
+ */
+
 #ifndef _BroadvTool_Thread_H_
 #define _BroadvTool_Thread_H_
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN			// 排除对 winsock 的包含
+#define WIN32_LEAN_AND_MEAN			
 #include <windows.h>
 #include <process.h> 
 #pragma warning(disable : 4996)
@@ -37,7 +34,7 @@ public:
 private:
 #ifdef _WIN32
 	//HANDLE m_hMutex;
-	CRITICAL_SECTION m_hMutex;			// 临界区比互斥量更快
+	CRITICAL_SECTION m_hMutex;
 #else
 	mutable pthread_mutex_t m_hMutex;
 #endif

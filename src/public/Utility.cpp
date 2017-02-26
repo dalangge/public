@@ -15,7 +15,6 @@ namespace BroadvTool
 {
 
 
-// 获取当前系统时间
 void CUtility::GetLocalTime(struct tm * t)
 {
 #ifdef _WIN32
@@ -27,7 +26,6 @@ void CUtility::GetLocalTime(struct tm * t)
 #endif
 }
 
-// 获取当前格式化系统时间 "2014-01-01 01:01:01"
 std::string CUtility::GetFormatLocalTime()
 {
 	struct tm  t;
@@ -84,29 +82,23 @@ int CUtility::Replace(std::string & str, const std::string & find, const std::st
 
 bool CUtility::Wildcard(const char *str1, const char *str2)
 {
-	//str1 待检测字符串  str2 匹配条件字符串
-	//设计思想：以'*'为分隔符分段比较测试
-	size_t iLen1 = strlen(str1);  
+    size_t iLen1 = strlen(str1);
 	size_t iLen2 = strlen(str2);
 	size_t i=0, j=0, k=0, l , m , n;  
 
-	//查找匹配条件字符串最后一个非'*'字符的位置
-	for(l=0 , n=0; l<iLen2; l++)
+    for(l=0 , n=0; l<iLen2; l++)
 	{
 		if(str2[l]!='*')n=l; 
 	}
 
 	while(i<iLen1&&j<iLen2)
 	{	
-		//指到匹配条件字符串'*'后的第一个字符，并备份i,j;/////
-		while(j<iLen2)										//	
+        while(j<iLen2)										//
 		{													//
 			if(str2[j]=='*')	{ k=1;  j++;}				//	
 			else	{ l=j; m=i; break; }					//			
 		}													//
-		//////////////////////////////////////////////////////
-
-		//////////段测试//////////////////////////////////////
+        
 		while(i<iLen1&&j<iLen2)								//				
 		{													//	
 			if(str2[j]=='*')break;							//
@@ -117,14 +109,13 @@ bool CUtility::Wildcard(const char *str1, const char *str2)
 				if(k==1){m++; i=m; j=l;}					//	
 				else return false;							//
 			}												//	
-		}													//		
-		//////////////////////////////////////////////////////
-
-		//如果被测字符串还没到尾，条件字串已到尾且最后一个不是'*'与k==1，则
+		}													//
+        
 		if(i<iLen1&&j==iLen2&&str2[j-1]!='*'&&k==1){m++; i=m; j=l;}
 	}
-	//条件字串（最后的'*'不算)与被测回全匹配 或 被测串没到尾但条件串最后是'*'
-	if((i==iLen1&&n+1==j)||((i<iLen1)&&j!=0&&str2[j-1]=='*'))return true;
+
+    if((i==iLen1&&n+1==j)||((i<iLen1)&&j!=0&&str2[j-1]=='*'))
+        return true;
 	else
 		return false;
 }
@@ -132,13 +123,11 @@ bool CUtility::Wildcard(const char *str1, const char *str2)
 #ifdef _WIN32
 void Converter(const char * buf, int len, std::string & str, int srccode, int dstcode)
 {
-	// 编码成Unicode
 	int n1 = MultiByteToWideChar(srccode, 0, buf, len, NULL, 0);
 	WCHAR * p1 = new WCHAR[n1+1];
 	MultiByteToWideChar(srccode, 0, buf, len, p1, n1);
 
-	// Unicode转码成目标字符集
-	int n2 = WideCharToMultiByte(dstcode, 0, p1, n1, NULL, 0, NULL, NULL);
+    int n2 = WideCharToMultiByte(dstcode, 0, p1, n1, NULL, 0, NULL, NULL);
 	char * p2 = new char[n2+1];
 	WideCharToMultiByte(dstcode, 0, p1, n1, p2, n2, NULL, NULL);
 
@@ -156,7 +145,6 @@ void Converter(const char * buf, int len, std::string & str, const char * srccod
 		return;
 	}
 
-	// 申请两倍的空间，应该足够做转换缓冲
 	size_t sz = len*2+1;
 	char * p = new char[sz];
 	do 
@@ -169,7 +157,6 @@ void Converter(const char * buf, int len, std::string & str, const char * srccod
 			break;
 		}
 
-		// 读取字节
 		str.clear();
 		str.append(p, sz-outlen);
 

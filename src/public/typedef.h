@@ -1,20 +1,11 @@
-/*******************************************************************************
-* 版权所有：	北京市博汇科技有限公司(C) 2012
-* 文件名称：	typedef.h 
-* 文件标识：	
-* 内容摘要： 	本文件提供windows/linux平台数据类型包括或定义
-* 其它说明：	
-* 当前版本： 	V1.0
-* 作    者： 	龚清华
-* 完成日期： 	2012-06-04
-*******************************************************************************/
+
 #ifndef __TYPEDEF_H_54323895192321809332856435365123123__
 #define __TYPEDEF_H_54323895192321809332856435365123123__
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN		 // 从 Windows 头中排除极少使用的资料
-#include <afxwin.h>				 // MFC 核心组件和标准组件
-#include <afxext.h>				 // MFC 扩展
+#define WIN32_LEAN_AND_MEAN
+#include <afxwin.h>				 
+#include <afxext.h>				 
 #pragma warning(disable : 4996)
 
 #else

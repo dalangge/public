@@ -80,9 +80,7 @@ void CUdpSrv::PerThread::Routine()
 		int n = select( (int)(nMax + 1), &rfds, NULL, NULL, &tv);
 		if (n > 0)
 		{
-			// 此处可能会因为回调函数导致长期占用锁，导致上层无法最快速度Insert/Remove
-			// 若实际代码中出现阻塞时间较长，再优化
-			AutoLock mx(m_cs);
+            AutoLock mx(m_cs);
 			for (size_t i = 0; i < m_vecSock.size() && !m_bStop; ++i)
 			{
 				PerSock * pSock = m_vecSock[i];
@@ -97,7 +95,6 @@ void CUdpSrv::PerThread::Routine()
 		}
 		else if (n == 0)
 		{
-			// select 超时
 			continue; 
 		}
 		else
@@ -149,7 +146,7 @@ SOCKET CUdpSrv::Join(const std::string & multip, int port, const std::string & l
 		return INVALID_SOCKET;
 	}
 
-	// 将缓冲增大100倍，防止数据突发丢失
+    // increase recv buffer size, avoid lose data
 	if (s.SetRecvBufSize(100*8*1024))
 	{
 		Log_Warning("CUdpSrv --- set recv buffer size error! err=%d", WSAGetLastError());
@@ -158,7 +155,6 @@ SOCKET CUdpSrv::Join(const std::string & multip, int port, const std::string & l
 	SockAddr addr(localip, port);
 	if (!multip.empty())
 	{
-// linux需要bind到多播地址上
 #ifndef _WIN32
 		addr.SetIP(multip);
 #endif
@@ -194,7 +190,6 @@ SOCKET CUdpSrv::Join(const std::string & multip, int port, const std::string & l
 		}
 	}
 
-	// 新创建一个线程
 	PerThread * pThread = new PerThread();
 	pThread->Insert(pSock);
 	m_vecThread.push_back(pThread);
